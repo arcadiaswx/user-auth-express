@@ -19,7 +19,26 @@ router.post("/register", function(req, res, next) {
     // Confirm that the user typed the same password twice.
     if (req.body.password !== req.body.confirmPassword) {
       var err = new Error("Passwords do not match.");
+      err.status = 400;
+      return next(err);
     }
+
+    // Create object with from input
+    var userData = {
+      email: req.body.email,
+      name: req.body.name,
+      favoriteBook: req.body.favoriteBook,
+      password: req.body.password
+    };
+
+    // Use Schema's `create` method to insert document into Mongo
+    User.create(userData, function(error, user) {
+      if (error) {
+        return next(error);
+      } else {
+        res.redirect("/profile");
+      }
+    });
   } else {
     var err = new Error("All fields required.");
     err.status = 400;
