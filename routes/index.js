@@ -9,7 +9,22 @@ router.get("/register", function(req, res, next) {
 
 // Post /register
 router.post("/register", function(req, res, next) {
-  return res.send("User created!");
+  if (
+    req.body.email &&
+    req.body.name &&
+    req.body.favoriteBook &&
+    req.body.password &&
+    req.body.confirmPassword
+  ) {
+    // Confirm that the user typed the same password twice.
+    if (req.body.password !== req.body.confirmPassword) {
+      var err = new Error("Passwords do not match.");
+    }
+  } else {
+    var err = new Error("All fields required.");
+    err.status = 400;
+    return next(err);
+  }
 });
 
 // GET /
