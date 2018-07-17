@@ -24,15 +24,17 @@ var UserSchema = new mongoose.Schema({
 });
 // Authenticate input against database documents
 UserSchema.statics.authenticate = function(email, password, callback) {
-  User.findOne({ email: email }).exec(function(error, user) {
-    if (error) {
-      return callback(error);
-    } else if (!user) {
-      var err = new Error("User not found.");
-      err.status = 401;
-      return callback(err);
+  User.findOne({ email: email })
+      .exec(function(error, user) {
+        if (error) {
+        return callback(error);
+      } else if (!user) {
+        var err = new Error("User not found.");
+        err.status = 401;
+        return callback(err);
     }
-    // Bcrypt compare takes the password the user entered, the password from the // db, and presents an error if something goes wrong, or returns the results.
+    // Bcrypt compare takes the password the user entered, the password from the 
+    // db, and presents an error if something goes wrong, or returns the results.
     bcrypt.compare(password, user.password, function(error, result) {
       if (result == true) {
         return callback(null, user);
