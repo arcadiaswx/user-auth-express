@@ -13,6 +13,12 @@ app.use(
   })
 );
 
+// Make user ID available in templates
+app.use(function(req, res, next) {
+  res.locals.currentUser = req.session.userId;
+  next();
+});
+
 // mongodb connection
 mongoose.connect("mongodb://localhost:27017/bookworm");
 var db = mongoose.connection;
