@@ -2,6 +2,26 @@ var express = require("express");
 var router = express.Router();
 var User = require("../models/user");
 
+// Get /profile
+router.get("/profile", function(req, res, next) {
+  if (!req.session.userId) {
+    var err = new Error("You are not authorized to view this page.");
+    err.status = 403;
+    return next(err);
+  }
+  User.findById(req.session.userId).exec(function(error, user) {
+    if (error) {
+      return next(error);
+    } else {
+      return res.render("profile", {
+        title: "Profile",
+        name: user.name,
+        favorite: user.favoriteBook
+      });
+    }
+  });
+});
+
 // Get /login
 router.get("/login", function(req, res, next) {
   return res.render("login", { title: "Log In" });
@@ -10,10 +30,7 @@ router.get("/login", function(req, res, next) {
 // Post /login
 router.post("/login", function(req, res, next) {
   if (req.body.email && req.body.password) {
-    User.authenticate(req.body.email && req.body.password, function(
-      error,
-      user
-    ) {
+    User.authenticate(req.body.email, req.body.password, function(error, user) {
       if (error || !user) {
         var err = new Error("Wrong email or password");
         err.status = 401;
