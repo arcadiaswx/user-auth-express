@@ -38,7 +38,7 @@ router.get("/profile", function(req, res, next) {
 });
 
 // Get /login
-router.get("/login", function(req, res, next) {
+router.get("/login", mid.loggedOut, function(req, res, next) {
   return res.render("login", { title: "Log In" });
 });
 
@@ -63,7 +63,7 @@ router.post("/login", function(req, res, next) {
 });
 
 // Get /register
-router.get("/register", function(req, res, next) {
+router.get("/register", mid.loggedOut, function(req, res, next) {
   return res.render("register", { title: "Sign Up" });
 });
 
